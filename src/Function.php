@@ -38,8 +38,6 @@ function IndodaxPrices(){
 
 	$arrayChange = array('btcidr','tenidr','abyssidr','actidr','adaidr','aoaidr','bcdidr','bchabcidr','bchsvidr','bnbidr','btgidr','btsidr','bttidr','croidr','drkidr','daxidr','dogeidr','ethidr','eosidr','etcidr','gscidr','gxsidr','hpbidr','ignisidr','inxidr','ltcidr','neoidr','npxsidr','nxtidr','ontidr','pxgidr','qtumidr','rvnidr','sccidr','stqidr','sumoidr','trxidr','usdcidr','usdtidr','vexidr','wavesidr','stridr','nemidr','xdceidr','xrpidr','xzcidr','btsbtc','drkbtc','dogebtc','ethbtc','ltcbtc','nxtbtc','sumobtc','tenbtc','nembtc','strbtc','xrpbtc');
 
-
-
 	$main = $decode['tickers'];
 	$text = 'Prices List<br>';
 	for ($i=0; $i < count($array); $i++) { 
@@ -50,10 +48,10 @@ function IndodaxPrices(){
 			$PumpDump = PumpDump($percentDay);
 		if (strpos($array[$i], 'idr') != null) {$prices = IDRFormula($prices);$pair = "IDR";}else{$pair = "BTC";}
 				
-			$text .= "$PumpDump $percentDay Nama : $name - $prices $pair<br>";
+			$text .= "$PumpDump $percentDay $name - $prices $pair\n";
 
 	}
-
+return $text;
 } // End Func
 
 ?>
