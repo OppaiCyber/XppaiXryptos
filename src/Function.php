@@ -37,7 +37,7 @@ function IndodaxPrices(){
 			$PumpDump = PumpDump($prices,$changeDay);
 		if (strpos($array[$i], 'idr') != null) {$prices = IDRFormula($prices);$pair = "IDR";}else{$pair = "BTC";}
 				
-			$text .= "$PumpDump Nama : $name - $prices > change $changeDay $pair<br>";
+			$text .= "$PumpDump Nama : $name - $prices $pair<br>";
 
 	}
 
