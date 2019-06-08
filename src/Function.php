@@ -8,6 +8,16 @@ function seeURL($url){
     return curl_exec($ch);
 }
 
+function gasChecker(){
+    $getData = json_decode(seeURL("https://ethgasstation.info/json/ethgasAPI.json"),true);
+    $safeLow = $getData['safeLow'] / 10;
+    $fastest = $getData['fastest'] / 10;
+    $medium = $getData['average'] / 10;
+    $fast = $getData['fast'] / 10;
+    $result = "💎Ethereum Gas Prices\n<code>🚲SafeLow -> $safeLow Gwei\n🚗Medium -> $medium Gwei\n🚄Fast -> $fast Gwei\n🚀Fastest -> $fastest Gwei</code>";
+    return $result;
+}
+
 function IDRFormula($num){
 	return number_format($num,2,',','.');
 }
