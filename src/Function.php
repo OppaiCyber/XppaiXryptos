@@ -22,12 +22,18 @@ function IDRFormula($num){
 	return number_format($num,2,',','.');
 }
 
-function PumpDump($last,$day){
-	if ($last > $day) {
+function PumpDump($percent){
+	if ($percent > 0) {
 		return "🍀";
 	}else{
 		return "🥀";
 	}
+}
+
+function percentChange($last,$day){
+	$increase = $last - $day;
+	$percent = $increase / $day * 100;
+	return $percent;
 }
 
 function IndodaxPrices(){
@@ -44,10 +50,11 @@ function IndodaxPrices(){
 			$name = $main[$array[$i]]['name'];
 			$prices = $main[$array[$i]]['last'];
 			$changeDay = $decode['prices_24h'][$arrayChange[$i]];
-			$PumpDump = PumpDump($prices,$changeDay);
+			$percentDay = percentChange($prices,$changeDay);
+			$PumpDump = PumpDump($percentDay);
 		if (strpos($array[$i], 'idr') != null) {$prices = IDRFormula($prices);$pair = "IDR";}else{$pair = "BTC";}
 				
-			$text .= "$PumpDump Nama : $name - $prices $pair<br>";
+			$text .= "$PumpDump $percentDay Nama : $name - $prices $pair<br>";
 
 	}
 
