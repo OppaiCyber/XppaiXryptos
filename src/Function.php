@@ -8,6 +8,20 @@ function seeURL($url){
     return curl_exec($ch);
 }
 
+function IDRFormula($num){
+	return number_format($num,2,',','.');
+}
+
+function PumpDump($percent){
+	if ($percent > 0) {return "🍀";}else{return "🥀";}
+}
+
+function percentChange($last,$day){
+	$increase = $last - $day;
+	$percent = $increase / $day * 100;
+	return round($percent,2)."%";
+}
+
 function gasChecker(){
     $getData = json_decode(seeURL("https://ethgasstation.info/json/ethgasAPI.json"),true);
     $safeLow = $getData['safeLow'] / 10;
@@ -16,24 +30,6 @@ function gasChecker(){
     $fast = $getData['fast'] / 10;
     $result = "💎Ethereum Gas Prices\n<code>🚲SafeLow -> $safeLow Gwei\n🚗Medium -> $medium Gwei\n🚄Fast -> $fast Gwei\n🚀Fastest -> $fastest Gwei</code>";
     return $result;
-}
-
-function IDRFormula($num){
-	return number_format($num,2,',','.');
-}
-
-function PumpDump($percent){
-	if ($percent > 0) {
-		return "🍀";
-	}else{
-		return "🥀";
-	}
-}
-
-function percentChange($last,$day){
-	$increase = $last - $day;
-	$percent = $increase / $day * 100;
-	return round($percent,2)."%";
 }
 
 function IndodaxPrices(){
@@ -58,8 +54,6 @@ function IndodaxPrices(){
 
 	}
 
- print_r($text);
 } // End Func
- IndodaxPrices();
 
 ?>
