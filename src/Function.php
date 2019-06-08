@@ -23,7 +23,7 @@ function PumpDump($percent){
 function percentChange($last,$day){
 	$increase = $last - $day;
 	$percent = $increase / $day * 100;
-	return round($percent)."%";
+	return round($percent,2)."%";
 }
 
 function IndodaxPrices(){
