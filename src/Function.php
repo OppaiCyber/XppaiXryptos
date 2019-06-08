@@ -8,7 +8,9 @@ function seeURL($url){
     return curl_exec($ch);
 }
 
-
+function IDRFormula($num){
+	return number_format($num,2,',','.');
+}
 
 function IndodaxPrices(){
 	$decode = json_decode(seeURL("https://indodax.com/api/summaries"), true);
@@ -17,15 +19,17 @@ function IndodaxPrices(){
 	$main = $decode['tickers'];
 	$text = 'Prices List<br>';
 	for ($i=0; $i < count($array); $i++) { 
-		if (strpos($array[$i], 'idr') != null) {$pair = "IDR";}else{$pair = "BTC";}
 			$name = $main[$array[$i]]['name'];
 			$prices = $main[$array[$i]]['last'];
+		if (strpos($array[$i], 'idr') != null) {$prices = IDRFormula($prices);$pair = "IDR";}else{$pair = "BTC";}
+				
 			$text .= "Nama : $name - $prices $pair<br>";
 
 	}
-	
-}
+echo $text;
+} // End Func
 
+IndodaxPrices();
 
 
 
