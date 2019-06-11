@@ -22,10 +22,6 @@ function percentChange($last,$day){
 	return round($percent,2)."%";
 }
 
-function upDownChecker($input){
-    if ($input > 0) {return "🍀";}elseif($input < 0){return "🥀";}
-}
-
 function gasChecker(){
     $getData = json_decode(seeURL("https://ethgasstation.info/json/ethgasAPI.json"),true);
     $safeLow = $getData['safeLow'] / 10;
@@ -67,7 +63,7 @@ function priceChecker($coin){
 	    }
 
 	$result  = "<code>Stats $coinx : \n";
-    $result .= upDownChecker($changesUSD).number_format($changesUSD,2)."% | $ $priceUSD \n".upDownChecker($changesIDR).number_format($changesIDR,2)."% | ".number_format($priceIDR,2,',','.')." $tail \nHigh : ".number_format($highDayIDR,2,',','.')." $tail | $ $highDayUSD \nLow : ".number_format($lowDayIDR,2,',','.')." $tail | $ $lowDayUSD</code>";
+    $result .= PumpDump($changesUSD).number_format($changesUSD,2)."% | $ $priceUSD \n".PumpDump($changesIDR).number_format($changesIDR,2)."% | ".number_format($priceIDR,2,',','.')." $tail \nHigh : ".number_format($highDayIDR,2,',','.')." $tail | $ $highDayUSD \nLow : ".number_format($lowDayIDR,2,',','.')." $tail | $ $lowDayUSD</code>";
     return $result;
     }// end of else
 
