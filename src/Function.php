@@ -43,7 +43,7 @@ function priceChecker($coin){
     @$error = $decode['HasWarning'];
 
     if ($error == 1) {
-    	return "hey its error";
+    	return "❌ This coin is not listed on exchanges we support ❌";
     }else{
 	    $usd = $decode["RAW"][$coinx]["USD"];
 	    $priceUSD = $usd['PRICE'];
