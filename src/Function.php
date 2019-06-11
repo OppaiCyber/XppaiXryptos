@@ -54,6 +54,27 @@ function priceChecker($coin){
     $result .= PumpDump($changesUSD).number_format($changesUSD,2)."% | $ $priceUSD \n".PumpDump($changesIDR).number_format($changesIDR,2)."% | ".number_format($priceIDR,2,',','.')." $tail \nHigh : ".number_format($highDayIDR,2,',','.')." $tail | $ $highDayUSD \nLow : ".number_format($lowDayIDR,2,',','.')." $tail | $ $lowDayUSD</code>";
     return $result;
     }// end of else
-    
 } // end func
 
+function AssetCalculator($amount, $pair1, $pair2){
+    $pair1x = strtoupper($pair1);
+    $pair2x = strtoupper($pair2);
+    $getData = json_decode(seeURL("https://min-api.cryptocompare.com/data/price?fsym=$pair1x&tsyms=$pair2x"), true);
+    $IDR = $getData[''.$pair2x.''];
+    $formula = $IDR * $amount;
+    $text = "Asset Calculator\n$amount $pair1x = $formula $pair2x";
+
+        if ($pair2 == "idr") {
+            if ($formula > 1000000) {
+            $formula = $formula / 1000000;
+            $tail = "jt IDR";
+        }else{
+            $tail = "IDR";
+        }
+            $idr_result = "Rp " . number_format($formula,2,',','.');
+            $text = "Asset Calculator\n$amount $pair1x = $idr_result $tail";
+        }elseif ($formula == ""){
+            $text = "❌ This coin is not listed on exchanges we support ❌\n Command Example : ex 12 eth idr";
+        }
+    return $text;
+}
