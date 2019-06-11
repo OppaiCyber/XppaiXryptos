@@ -10,7 +10,13 @@ $bot->cmd('hontoni','yokatta');
 
 $bot->cmd('/gas', function(){
         $options = ['parse_mode' => 'html','reply' => true,'disable_web_page_preview' => true];
-            return Bot::sendMessage(gasChecker(),$options);
+                return Bot::sendMessage(gasChecker(),$options);
+});
+
+$bot->cmd('/p', function(){
+        
+        $options = ['parse_mode' => 'html','reply' => true,'disable_web_page_preview' => true];
+                return Bot::sendMessage(priceChecker(),$options);
 });
 
 
