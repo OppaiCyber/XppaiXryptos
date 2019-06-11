@@ -22,6 +22,10 @@ function percentChange($last,$day){
 	return round($percent,2)."%";
 }
 
+function upDownChecker($input){
+    if ($input > 0) {return "🍀";}elseif($input < 0){return "🥀";}
+}
+
 function gasChecker(){
     $getData = json_decode(seeURL("https://ethgasstation.info/json/ethgasAPI.json"),true);
     $safeLow = $getData['safeLow'] / 10;
@@ -32,26 +36,42 @@ function gasChecker(){
     return $result;
 }
 
-function IndodaxPrices(){
-	$decode = json_decode(seeURL("https://indodax.com/api/summaries"), true);
-	$array = array('btc_idr','ten_idr','abyss_idr','act_idr','ada_idr','aoa_idr','bcd_idr','bchabc_idr','bchsv_idr','bnb_idr','btg_idr','bts_idr','btt_idr','cro_idr','drk_idr','dax_idr','doge_idr','eth_idr','eos_idr','etc_idr','gsc_idr','gxs_idr','hpb_idr','ignis_idr','inx_idr','ltc_idr','neo_idr','npxs_idr','nxt_idr','ont_idr','pxg_idr','qtum_idr','rvn_idr','scc_idr','stq_idr','sumo_idr','trx_idr','usdc_idr','usdt_idr','vex_idr','waves_idr','str_idr','nem_idr','xdce_idr','xrp_idr','xzc_idr','bts_btc','drk_btc','doge_btc','eth_btc','ltc_btc','nxt_btc','sumo_btc','ten_btc','nem_btc','str_btc','xrp_btc');
+function priceChecker($coin){
+    $coinx = strtoupper($coin);
+    $getData = seeURL("https://min-api.cryptocompare.com/data/pricemultifull?fsyms=$coinx&tsyms=BTC,USD,IDR");
+    $decode = json_decode($getData,TRUE);
+    @$error = $decode['HasWarning'];
 
-	$arrayChange = array('btcidr','tenidr','abyssidr','actidr','adaidr','aoaidr','bcdidr','bchabcidr','bchsvidr','bnbidr','btgidr','btsidr','bttidr','croidr','drkidr','daxidr','dogeidr','ethidr','eosidr','etcidr','gscidr','gxsidr','hpbidr','ignisidr','inxidr','ltcidr','neoidr','npxsidr','nxtidr','ontidr','pxgidr','qtumidr','rvnidr','sccidr','stqidr','sumoidr','trxidr','usdcidr','usdtidr','vexidr','wavesidr','stridr','nemidr','xdceidr','xrpidr','xzcidr','btsbtc','drkbtc','dogebtc','ethbtc','ltcbtc','nxtbtc','sumobtc','tenbtc','nembtc','strbtc','xrpbtc');
+    if ($error == 1) {
+    	return "hey its error";
+    }else{
+	    $usd = $decode["RAW"][$coinx]["USD"];
+	    $priceUSD = $usd['PRICE'];
+	    $changesUSD = $usd['CHANGEPCTDAY'];
+	    $lowDayUSD = $usd['LOWDAY'];
+	    $highDayUSD = $usd['HIGHDAY'];
 
-	$main = $decode['tickers'];
-	$text = 'Prices List<br>';
-	for ($i=0; $i < count($array); $i++) { 
-			$name = $main[$array[$i]]['name'];
-			$prices = $main[$array[$i]]['last'];
-			$changeDay = $decode['prices_24h'][$arrayChange[$i]];
-			$percentDay = percentChange($prices,$changeDay);
-			$PumpDump = PumpDump($percentDay);
-		if (strpos($array[$i], 'idr') != null) {$prices = IDRFormula($prices);$pair = "IDR";}else{$pair = "BTC";}
-				
-			$text .= "$PumpDump $percentDay $name - $prices $pair\n";
+	    $idr = $decode["RAW"][$coinx]["IDR"];
+	    $priceIDR = $idr['PRICE'];
+	    $changesIDR = $idr['CHANGEPCTDAY'];
+	    $lowDayIDR = $idr['LOWDAY'];
+	    $highDayIDR = $idr['HIGHDAY'];
 
-	}
-return $text;
-} // End Func
+	    if ($priceIDR > 1000000) {
+	        $priceIDR = $priceIDR / 1000000;
+	        $lowDayIDR = $lowDayIDR / 1000000;
+	        $highDayIDR = $highDayIDR / 1000000;
+	        $tail = "jt IDR";
+	    }else{
+	        $tail = "IDR";
+	    }
+
+	$result  = "<code>Stats $coinx : \n";
+    $result .= upDownChecker($changesUSD).number_format($changesUSD,2)."% | $ $priceUSD \n".upDownChecker($changesIDR).number_format($changesIDR,2)."% | ".number_format($priceIDR,2,',','.')." $tail \nHigh : ".number_format($highDayIDR,2,',','.')." $tail | $ $highDayUSD \nLow : ".number_format($lowDayIDR,2,',','.')." $tail | $ $lowDayUSD</code>";
+    return $result;
+    }// end of else
+
+    
+} // end func
 
 ?>
