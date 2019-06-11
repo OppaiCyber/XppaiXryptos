@@ -1,6 +1,6 @@
 # XppaiXryptos
-Bot Telegram written in PHP
-Using radyakaze Framework
+Bot Telegram that'll handle your Cryptocurrency things
+written in PHP & Using radyakaze Framework
 
 # Installation
 * Replace this line on Xryptos.php -> PHPTelebot('Your Token Bot', 'Your Bot Username');<br>
@@ -9,3 +9,4 @@ Using radyakaze Framework
 * Done<br>
 
 *i'll add some Readme later
+Contact me : https://t.me/OppaiCyber
