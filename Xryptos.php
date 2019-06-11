@@ -18,6 +18,11 @@ $bot->cmd('/p', function($coin){
                 return Bot::sendMessage(priceChecker($coin),$options);
 });
 
+$bot->cmd('/ex|ex', function($amount,$pair1,$pair2){
+        $options = ['parse_mode' => 'html','reply' => true,'disable_web_page_preview' => true];
+            return Bot::sendMessage(AssetCalculator($amount,$pair1,$pair2),$options);
+});
+
 $bot->cmd('dbug|/dbug', function(){
     $message = Bot::message();
     	$raw = json_encode($message, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
