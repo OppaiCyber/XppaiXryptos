@@ -1,7 +1,7 @@
 <?php
 
 function PumpDump($percent){
-    if ($percent > 0) {return "🍀";}else{return "🥀";}
+    return $percent > 0 ?  "🍀" :  "🥀";
 }
 
 function Indodax(){
