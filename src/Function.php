@@ -1,13 +1,5 @@
 <?php
 
-function seeURL($url){
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    return curl_exec($ch);
-}
-
 function PumpDump($percent){
     if ($percent > 0) {return "🍀";}else{return "🥀";}
 }
@@ -18,7 +10,7 @@ function Indodax(){
 }
 
 function gasChecker(){
-    $getData = json_decode(seeURL("https://ethgasstation.info/json/ethgasAPI.json"),true);
+    $getData = json_decode(file_get_contents("https://ethgasstation.info/json/ethgasAPI.json"),true);
 
     $safeLow = $getData['safeLow'] / 10;
     $fastest = $getData['fastest'] / 10;
@@ -30,7 +22,7 @@ function gasChecker(){
 
 function priceChecker($coin){
     $coinx = strtoupper($coin);
-    $getData = seeURL("https://min-api.cryptocompare.com/data/pricemultifull?fsyms=$coinx&tsyms=BTC,USD,IDR");
+    $getData = file_get_contents("https://min-api.cryptocompare.com/data/pricemultifull?fsyms=$coinx&tsyms=BTC,USD,IDR");
     $decode = json_decode($getData,TRUE);
     @$error = $decode['HasWarning'];
     if (empty($coin) || $error == 1) {
@@ -64,7 +56,7 @@ function priceChecker($coin){
 function AssetCalculator($amount, $pair1, $pair2){
     $pair1x = strtoupper($pair1);
     $pair2x = strtoupper($pair2);
-    $getData = json_decode(seeURL("https://min-api.cryptocompare.com/data/price?fsym=$pair1x&tsyms=$pair2x"), true);
+    $getData = json_decode(file_get_contents("https://min-api.cryptocompare.com/data/price?fsym=$pair1x&tsyms=$pair2x"), true);
     $IDR = $getData[''.$pair2x.''];
     $formula = $IDR * $amount;
     $text = "💎Asset Calculator \n$amount $pair1x = $formula $pair2x";
@@ -85,7 +77,7 @@ function AssetCalculator($amount, $pair1, $pair2){
 }
 
 function GlobalStat(){
-    $main = json_decode(seeURL("https://api.coinlore.com/api/global/"),true);
+    $main = json_decode(file_get_contents("https://api.coinlore.com/api/global/"),true);
         $totalCoin = $main[0]['coins_count'];
         $activeMarket = $main[0]['active_markets'];
         $totalMcap = number_format($main[0]['total_mcap']);
