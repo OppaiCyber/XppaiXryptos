@@ -78,3 +78,22 @@ function AssetCalculator($amount, $pair1, $pair2){
         }
     return $text;
 }
+
+function GlobalStat(){
+	$main = json_decode(seeURL("https://api.coinlore.com/api/global/"),true);
+		$totalCoin = $main[0]['coins_count'];
+		$activeMarket = $main[0]['active_markets'];
+		$totalMcap = number_format($main[0]['total_mcap']);
+		$totalVolume = number_format($main[0]['total_volume']);
+			$btcValue = $main[0]['btc_d'];
+			$ethValue = $main[0]['eth_d'];
+			$mcapChange = $main[0]['mcap_change'];
+				$volumeChange = $main[0]['volume_change'];
+				$avgChange = $main[0]['avg_change_percent'];
+				$volumeAth = $main[0]['volume_ath'];
+				$mcapAth = number_format($main[0]['mcap_ath']);
+
+		$result = "Total Coin : $totalCoin\nActive Market : $activeMarket\nValue in BTC : $btcValue BTC\nValue in ETH : $ethValue ETH\nVolume Change : $volumeChange %\nAverage Change : $avgChange %\nMarketcap Change : $mcapChange %\nTotal Volume : $totalVolume USD\nTotal Marketcap : $totalMcap USD\nMarketcap AllDayHigh : $mcapAth USD\n";
+
+	return $result;
+}
