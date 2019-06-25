@@ -4,9 +4,13 @@ function PumpDump($percent){
     return $percent > 0 ?  "🍀" :  "🥀";
 }
 
-function Indodax(){
-    $yeet = file_get_contents("https://beras.me/OppaiCyber/api.php");
-    return $yeet;
+function latestNews(){
+	$decode = json_decode($getData = file_get_contents("https://cryptocontrol.io/api/v1/public/news?key=2250d3851ea3eeef85bc26f4f5621775"), true);
+	$news = "Latest News\n";
+	for ($i=0; $i < count($decode[0]['similarArticles']); $i++) { 
+		$news .= "<a href='".$decode[0]['similarArticles'][$i]['url']."'>".$decode[0]['similarArticles'][$i]['title']."</a>\n";
+	}
+	return $news;
 }
 
 function gasChecker(){
