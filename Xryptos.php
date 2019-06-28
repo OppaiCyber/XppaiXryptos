@@ -13,6 +13,11 @@ $bot->cmd('/gas', function(){
                 return Bot::sendMessage(gasChecker(),$options);
 });
 
+$bot->cmd('/calc', function($coin,$amount){
+        $options = ['parse_mode' => 'html','reply' => true,'disable_web_page_preview' => true];
+            return Bot::sendMessage(Calculatorv2($coin,$amount),$options);
+});
+
 $bot->cmd('/news', function(){
         $options = ['parse_mode' => 'html','reply' => true,'disable_web_page_preview' => true];
                 return Bot::sendMessage(latestNews(),$options);
