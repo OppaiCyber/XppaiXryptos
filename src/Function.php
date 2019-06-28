@@ -4,6 +4,13 @@ function PumpDump($percent){
     return $percent > 0 ?  "🍀" :  "🥀";
 }
 
+function TimeNow(){
+    $h = "7";// Hour for time zone goes here e.g. +7 or -4, just remove the + or -
+    $hm = $h * 60; 
+    $ms = $hm * 60;
+    return gmdate("d/m/Y g:i:s A", time()-($ms)); // the "-" can be switched to a plus if that's what your time zone is.
+}
+
 function latestNews(){
 	$decode = json_decode($getData = file_get_contents("https://cryptocontrol.io/api/v1/public/news?key=2250d3851ea3eeef85bc26f4f5621775"), true);
 	$news = "Latest News\n";
@@ -11,6 +18,40 @@ function latestNews(){
 		$news .= "<a href='".$decode[0]['similarArticles'][$i]['url']."'>".$decode[0]['similarArticles'][$i]['title']."</a>\n";
 	}
 	return $news;
+}
+
+function Calculatorv2($coin,$amount){
+    $coinx = strtoupper($coin);
+    $getData = file_get_contents("https://min-api.cryptocompare.com/data/pricemultifull?fsyms=$coinx&tsyms=BTC,USD,IDR");
+    $decode = json_decode($getData,TRUE);
+    @$error = $decode['HasWarning'];
+    if (empty($coin) || $error == 1) {
+        return "<code>Sorry we didn't support your coin yet\nPlease submit with right format\nExample : /calc ignis 222</code>";
+    }else{
+
+        $priceBTC = $decode["RAW"][$coinx]["BTC"]['PRICE'];
+        $priceUSD = $decode["RAW"][$coinx]["USD"]['PRICE'];
+        $priceIDR = $decode["RAW"][$coinx]["IDR"]['PRICE'];
+        
+        $formulaBTC = $priceBTC * $amount;
+        $formulaUSD = $priceUSD * $amount;
+        $formulaIDR = $priceIDR * $amount;
+
+        if ($formulaIDR > 1000000) {
+            $formulaIDR = $formulaIDR / 1000000;
+            $tail = "jt IDR";
+        }elseif ($formulaIDR > 1000) {
+            $formulaIDR = $formulaIDR / 1000;
+            $tail = "k IDR";
+        }
+        else{
+            $tail = "IDR";
+        }
+
+    $result  = "<code>💎Xryptos Calculator $amount $coinx : \n🕓".TimeNow();
+    $result .= "\n₿ $formulaBTC BTC\n$ $formulaUSD USD\nRp. ".number_format($formulaIDR,2,',','.')." $tail</code>";
+    return $result;
+    }// end of else
 }
 
 function gasChecker(){
