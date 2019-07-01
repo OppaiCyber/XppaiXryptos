@@ -11,6 +11,22 @@ function TimeNow(){
     return gmdate("d/m/Y g:i:s A", time()-($ms)); // the "-" can be switched to a plus if that's what your time zone is.
 }
 
+function topTen(){
+    $decode = json_decode(file_get_contents("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd"), true);
+    $result = "Top 10 Marketcap\n";
+    $a = 1;
+    for ($i=0; $i < 10; $i++) { 
+        $coinname = $decode[$i]['name'];
+        $coinSymbol = $decode[$i]['symbol'];
+        $price = $decode[$i]['current_price'];
+        $changeday = $decode[$i]['market_cap_change_percentage_24h'];
+        $UpDownIcon = PumpDump($changeday);
+        $result .= "$a. $coinname ($coinSymbol): $price USD $UpDownIcon $changeday \n";
+        $a++;
+    }
+    return $result;
+}
+
 function latestNews(){
 	$decode = json_decode($getData = file_get_contents("https://cryptocontrol.io/api/v1/public/news?key=2250d3851ea3eeef85bc26f4f5621775"), true);
 	$news = "Latest News\n";
