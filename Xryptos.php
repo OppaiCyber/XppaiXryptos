@@ -18,6 +18,11 @@ $bot->cmd('/top', function(){
             return Bot::sendMessage(topTen(),$options);
 });
 
+$bot->cmd('/indodax', function($coin,$amount){
+        $options = ['parse_mode' => 'html','reply' => true,'disable_web_page_preview' => true];
+            return Bot::sendMessage(iPrice($coin,$amount),$options);
+});
+
 $bot->cmd('/calc', function($coin,$amount){
         $options = ['parse_mode' => 'html','reply' => true,'disable_web_page_preview' => true];
             return Bot::sendMessage(Calculatorv2($coin,$amount),$options);
