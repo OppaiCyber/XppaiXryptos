@@ -11,6 +11,46 @@ function TimeNow(){
     return gmdate("d/m/Y g:i:s A", time()-($ms)); // the "-" can be switched to a plus if that's what your time zone is.
 }
 
+function iPrice($coin,$amount){
+    if (empty($coin)) {
+        return "<code>Sorry we didn't support your coin yet\nPlease submit with right format\nExample : /indodax ignis\nor you can calculate too with /indodax doge 1000</code>";
+    }else{
+    $decode = json_decode(file_get_contents("https://indodax.com/api/summaries"), true);
+    $coinName = $decode['tickers'][$coin."_idr"]['name'];
+    $priceLast = $decode['tickers'][$coin."_idr"]['last'];
+    $priceBuy = $decode['tickers'][$coin."_idr"]['buy'];
+    $priceSell = $decode['tickers'][$coin."_idr"]['sell'];
+    $volumeIDR = $decode['tickers'][$coin."_idr"]['vol_idr'];
+    $serverTime = gmdate("d/m/Y g:i:s A", $decode['tickers'][$coin."_idr"]['server_time']);
+    
+    if (!empty(is_numeric($amount))) {
+        $priceLast = $priceLast * $amount;
+    }
+
+    if ($priceLast > 1000000) {
+            $priceLast = $priceLast / 1000000;
+            $priceBuy = $priceBuy / 1000000;
+            $priceSell = $priceSell / 1000000;
+            $volumeIDR = $volumeIDR / 1000000;
+            $tail = "jt IDR";
+        }elseif ($priceLast > 1000) {
+            $priceLast = $priceLast / 1000;
+            $priceBuy = $priceBuy / 1000;
+            $priceSell = $priceSell / 1000;
+            $volumeIDR = $volumeIDR / 1000;
+            $tail = "k IDR";
+        }
+        else{
+            $tail = "IDR";
+        }
+
+    
+    $result = "Name : $coinName\nPrice : $priceLast $tail\nBuy : $priceBuy $tail\nSell : $priceSell $tail\nVolume IDR : ".number_format($volumeIDR)."$tail\n\nMarket : Indodax - $serverTime";
+
+return $result;
+    } // end else
+} // End Func
+
 function topTen(){
     $decode = json_decode(file_get_contents("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd"), true);
     $result = "Top 10 Marketcap\n";
