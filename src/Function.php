@@ -1,26 +1,25 @@
 <?php
-
 function PumpDump($percent){
     return $percent > 0 ?  "🍀" :  "🥀";
 }
 
 function TimeNow(){
-    $h = "7";// Hour for time zone goes here e.g. +7 or -4, just remove the + or -
+    $h = "7";
     $hm = $h * 60; 
     $ms = $hm * 60;
-    return gmdate("d/m/Y g:i:s A", time()-($ms)); // the "-" can be switched to a plus if that's what your time zone is.
+    return gmdate("d/m/Y g:i:s A", time()-($ms));
 }
 
 function addTail($teks){
     if ($teks > 1000000) {
-        $tail .= "jt IDR";
+        $tail = "jt IDR";
     }elseif ($priceLast > 1000) {
-        $tail .= "k IDR";
+        $tail = "k IDR";
     }
     else{
-        $tail .= "IDR";
+        $tail = "IDR";
     }
-    return $tail;
+    return $teks.$tail;
 }
 
 function iPrice($coin,$amount){
@@ -35,19 +34,18 @@ function iPrice($coin,$amount){
         $priceBuy = addTail($coinArr['buy']);
         $priceSell = addTail($coinArr['sell']);
         $volumeIDR = addTail($coinArr['vol_idr']);
-    
+
         $serverTime = gmdate("d/m/Y g:i:s A", $coinArr['server_time']);
-        
+
         if (!empty(is_numeric($amount))) {
             $priceLast = $priceLast * $amount;
         }
     
         $result = "Name : $coinName\nPrice : $priceLast \nBuy : $priceBuy\nSell : $priceSell\nVolume IDR : ".number_format($volumeIDR)."\n\nMarket : Indodax - $serverTime";
-    
+
     return $result;
     }else{
         return "Please submit with right format\nExample : /indodax ignis\nor you can calculate too with /indodax doge 1000</code>";
-
     }
 }
 
@@ -87,7 +85,7 @@ function Calculatorv2($coin,$amount){
         $priceBTC = $coinArr["BTC"]['PRICE'];
         $priceUSD = $coinArr["USD"]['PRICE'];
         $priceIDR = $coinArr["IDR"]['PRICE'];
-        
+
         $formulaBTC = $priceBTC * $amount;
         $formulaUSD = $priceUSD * $amount;
         $formulaIDR = addTail($priceIDR * $amount);
@@ -95,12 +93,11 @@ function Calculatorv2($coin,$amount){
     $result  = "<code>💎Xryptos Calculator $amount $coinx : \n🕓".TimeNow();
     $result .= "\n₿ $formulaBTC BTC\n$ $formulaUSD USD\nRp. ".number_format($formulaIDR,2,',','.')."</code>";
     return $result;
-    }// end of else
+    }
 }
 
 function gasChecker(){
     $getData = json_decode(file_get_contents("https://ethgasstation.info/json/ethgasAPI.json"),true);
-
     $safeLow = $getData['safeLow'] / 10;
     $fastest = $getData['fastest'] / 10;
     $medium = $getData['average'] / 10;
@@ -132,7 +129,6 @@ function priceChecker($coin){
     $result .= PumpDump($changesUSD).number_format($changesUSD,2)."% | $ $priceUSD \n".PumpDump($changesIDR).number_format($changesIDR,2)."% | ".number_format($formula,2,',','.')." \nHigh : ".number_format($highDayIDR,2,',','.')." | $ $highDayUSD \nLow : ".number_format($lowDayIDR,2,',','.')." | $ $lowDayUSD</code>";
     return $result;
     }
-    
 }
 
 function AssetCalculator($amount, $pair1, $pair2){
@@ -142,7 +138,6 @@ function AssetCalculator($amount, $pair1, $pair2){
     $IDR = $getData[''.$pair2x.''];
     $formula = addTail($IDR * $amount);
     $text = "💎Asset Calculator \n$amount $pair1x = $formula $pair2x";
-
         if ($pair2 == "idr") {
             $idr_result = "Rp " . number_format($formula,2,',','.');
             $text = "💎Asset Calculator \n$amount $pair1x = $idr_result";
@@ -155,7 +150,6 @@ function AssetCalculator($amount, $pair1, $pair2){
 function GlobalStat(){
     $main = json_decode(file_get_contents("https://api.coinlore.com/api/global/"),true);
     $firstMain = $main[0];
-    
     $totalCoin = $firstMain['coins_count'];
     $activeMarket = $firstMain['active_markets'];
     $totalMcap = number_format($firstMain['total_mcap']);
@@ -174,8 +168,6 @@ function GlobalStat(){
     $avgChangeIcon = PumpDump($avgChange);
     $mcapChangeIcon = PumpDump($mcapChange);
 
-
-        $result = "Global Cryptocurrency Stats\nTotal Coin : 💱 $totalCoin\nActive Market : 🛒 $activeMarket\nValue in BTC : ₿ $btcValue BTC\nValue in ETH : 💎 $ethValue ETH\nVolume Change : $volChangeIcon $volumeChange %\nAverage Change : $avgChangeIcon $avgChange %\nMarketcap Change : $mcapChangeIcon $mcapChange %\nTotal Volume : 💸 $totalVolume USD\nTotal Marketcap : 💸 $totalMcap USD\nMarketcap AllDayHigh : 💸 $mcapAth USD\n";
-
+    $result = "Global Cryptocurrency Stats\nTotal Coin : 💱 $totalCoin\nActive Market : 🛒 $activeMarket\nValue in BTC : ₿ $btcValue BTC\nValue in ETH : 💎 $ethValue ETH\nVolume Change : $volChangeIcon $volumeChange %\nAverage Change : $avgChangeIcon $avgChange %\nMarketcap Change : $mcapChangeIcon $mcapChange %\nTotal Volume : 💸 $totalVolume USD\nTotal Marketcap : 💸 $totalMcap USD\nMarketcap AllDayHigh : 💸 $mcapAth USD\n";
     return $result;
 }
