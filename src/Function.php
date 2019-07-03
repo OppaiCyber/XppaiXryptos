@@ -13,12 +13,12 @@ function TimeNow(){
 
 function addTail($teks){
     if ($teks > 1000000) {
-        $tail = "teks IDR";
+        $tail .= "jt IDR";
     }elseif ($priceLast > 1000) {
-        $tail = "k IDR";
+        $tail .= "k IDR";
     }
     else{
-        $tail = "IDR";
+        $tail .= "IDR";
     }
     return $tail;
 }
@@ -42,7 +42,7 @@ function iPrice($coin,$amount){
             $priceLast = $priceLast * $amount;
         }
     
-        $result = "Name : $coinName\nPrice : $priceLast \nBuy : $priceBuy $tail\nSell : $priceSell $tail\nVolume IDR : ".number_format($volumeIDR)."$tail\n\nMarket : Indodax - $serverTime";
+        $result = "Name : $coinName\nPrice : $priceLast \nBuy : $priceBuy\nSell : $priceSell\nVolume IDR : ".number_format($volumeIDR)."\n\nMarket : Indodax - $serverTime";
     
     return $result;
     }else{
@@ -54,15 +54,14 @@ function iPrice($coin,$amount){
 function topTen(){
     $decode = json_decode(file_get_contents("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd"), true);
     $result = "Top 10 Marketcap\n";
-    $a = 1;
     for ($i=0; $i < 10; $i++) { 
         $coinname = $decode[$i]['name'];
         $coinSymbol = $decode[$i]['symbol'];
         $price = $decode[$i]['current_price'];
         $changeday = $decode[$i]['market_cap_change_percentage_24h'];
         $UpDownIcon = PumpDump($changeday);
+        $a = $i+1;
         $result .= "$a. $coinname ($coinSymbol): $price USD $UpDownIcon $changeday \n";
-        $a++;
     }
     return $result;
 }
@@ -94,7 +93,7 @@ function Calculatorv2($coin,$amount){
         $formulaIDR = addTail($priceIDR * $amount);
 
     $result  = "<code>💎Xryptos Calculator $amount $coinx : \n🕓".TimeNow();
-    $result .= "\n₿ $formulaBTC BTC\n$ $formulaUSD USD\nRp. ".number_format($formulaIDR,2,',','.')." $tail</code>";
+    $result .= "\n₿ $formulaBTC BTC\n$ $formulaUSD USD\nRp. ".number_format($formulaIDR,2,',','.')."</code>";
     return $result;
     }// end of else
 }
@@ -130,11 +129,11 @@ function priceChecker($coin){
         $highDayIDR = addTail($idr['HIGHDAY']);
 
     $result  = "<code>💎Stats $coinx : \n";
-    $result .= PumpDump($changesUSD).number_format($changesUSD,2)."% | $ $priceUSD \n".PumpDump($changesIDR).number_format($changesIDR,2)."% | ".number_format($formula,2,',','.')." $tail \nHigh : ".number_format($highDayIDR,2,',','.')." $tail | $ $highDayUSD \nLow : ".number_format($lowDayIDR,2,',','.')." $tail | $ $lowDayUSD</code>";
+    $result .= PumpDump($changesUSD).number_format($changesUSD,2)."% | $ $priceUSD \n".PumpDump($changesIDR).number_format($changesIDR,2)."% | ".number_format($formula,2,',','.')." \nHigh : ".number_format($highDayIDR,2,',','.')." | $ $highDayUSD \nLow : ".number_format($lowDayIDR,2,',','.')." | $ $lowDayUSD</code>";
     return $result;
-    }// end of else
+    }
     
-} // end func
+}
 
 function AssetCalculator($amount, $pair1, $pair2){
     $pair1x = strtoupper($pair1);
@@ -146,7 +145,7 @@ function AssetCalculator($amount, $pair1, $pair2){
 
         if ($pair2 == "idr") {
             $idr_result = "Rp " . number_format($formula,2,',','.');
-            $text = "💎Asset Calculator \n$amount $pair1x = $idr_result $tail";
+            $text = "💎Asset Calculator \n$amount $pair1x = $idr_result";
         }elseif($formula == ""){
             $text = "<code>Sorry we didn't support your coin yet\nPlease submit with right format\nExample : ex 12 eth idr</code>";
         }
