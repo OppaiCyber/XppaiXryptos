@@ -11,45 +11,45 @@ function TimeNow(){
     return gmdate("d/m/Y g:i:s A", time()-($ms)); // the "-" can be switched to a plus if that's what your time zone is.
 }
 
-function iPrice($coin,$amount){
-    if (empty($coin)) {
-        return "<code>Sorry we didn't support your coin yet\nPlease submit with right format\nExample : /indodax ignis\nor you can calculate too with /indodax doge 1000</code>";
-    }else{
-    $decode = json_decode(file_get_contents("https://indodax.com/api/summaries"), true);
-    $coinName = $decode['tickers'][$coin."_idr"]['name'];
-    $priceLast = $decode['tickers'][$coin."_idr"]['last'];
-    $priceBuy = $decode['tickers'][$coin."_idr"]['buy'];
-    $priceSell = $decode['tickers'][$coin."_idr"]['sell'];
-    $volumeIDR = $decode['tickers'][$coin."_idr"]['vol_idr'];
-    $serverTime = gmdate("d/m/Y g:i:s A", $decode['tickers'][$coin."_idr"]['server_time']);
-    
-    if (!empty(is_numeric($amount))) {
-        $priceLast = $priceLast * $amount;
+function addTail($teks){
+    if ($teks > 1000000) {
+        $tail = "teks IDR";
+    }elseif ($priceLast > 1000) {
+        $tail = "k IDR";
     }
+    else{
+        $tail = "IDR";
+    }
+    return $tail;
+}
 
-    if ($priceLast > 1000000) {
-            $priceLast = $priceLast / 1000000;
-            $priceBuy = $priceBuy / 1000000;
-            $priceSell = $priceSell / 1000000;
-            $volumeIDR = $volumeIDR / 1000000;
-            $tail = "jt IDR";
-        }elseif ($priceLast > 1000) {
-            $priceLast = $priceLast / 1000;
-            $priceBuy = $priceBuy / 1000;
-            $priceSell = $priceSell / 1000;
-            $volumeIDR = $volumeIDR / 1000;
-            $tail = "k IDR";
+function iPrice($coin,$amount){
+    if (!empty($coin)) {
+        $decode = json_decode(file_get_contents("https://indodax.com/api/summaries"), true);
+        $coinArr = $decode['tickers'][$coin."_idr"];
+        $coinName = $coinArr['name'];
+        if (empty($coinName)){
+            return "<code>Sorry we didn't support your coin yet</code>"; 
         }
-        else{
-            $tail = "IDR";
-        }
-
+        $priceLast = addTail($coinArr['last']);
+        $priceBuy = addTail($coinArr['buy']);
+        $priceSell = addTail($coinArr['sell']);
+        $volumeIDR = addTail($coinArr['vol_idr']);
     
-    $result = "Name : $coinName\nPrice : $priceLast $tail\nBuy : $priceBuy $tail\nSell : $priceSell $tail\nVolume IDR : ".number_format($volumeIDR)."$tail\n\nMarket : Indodax - $serverTime";
+        $serverTime = gmdate("d/m/Y g:i:s A", $coinArr['server_time']);
+        
+        if (!empty(is_numeric($amount))) {
+            $priceLast = $priceLast * $amount;
+        }
+    
+        $result = "Name : $coinName\nPrice : $priceLast \nBuy : $priceBuy $tail\nSell : $priceSell $tail\nVolume IDR : ".number_format($volumeIDR)."$tail\n\nMarket : Indodax - $serverTime";
+    
+    return $result;
+    }else{
+        return "Please submit with right format\nExample : /indodax ignis\nor you can calculate too with /indodax doge 1000</code>";
 
-return $result;
-    } // end else
-} // End Func
+    }
+}
 
 function topTen(){
     $decode = json_decode(file_get_contents("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd"), true);
@@ -84,25 +84,14 @@ function Calculatorv2($coin,$amount){
     if (empty($coin) || $error == 1) {
         return "<code>Sorry we didn't support your coin yet\nPlease submit with right format\nExample : /calc ignis 222</code>";
     }else{
-
-        $priceBTC = $decode["RAW"][$coinx]["BTC"]['PRICE'];
-        $priceUSD = $decode["RAW"][$coinx]["USD"]['PRICE'];
-        $priceIDR = $decode["RAW"][$coinx]["IDR"]['PRICE'];
+        $coinArr = $decode["RAW"][$coinx];
+        $priceBTC = $coinArr["BTC"]['PRICE'];
+        $priceUSD = $coinArr["USD"]['PRICE'];
+        $priceIDR = $coinArr["IDR"]['PRICE'];
         
         $formulaBTC = $priceBTC * $amount;
         $formulaUSD = $priceUSD * $amount;
-        $formulaIDR = $priceIDR * $amount;
-
-        if ($formulaIDR > 1000000) {
-            $formulaIDR = $formulaIDR / 1000000;
-            $tail = "jt IDR";
-        }elseif ($formulaIDR > 1000) {
-            $formulaIDR = $formulaIDR / 1000;
-            $tail = "k IDR";
-        }
-        else{
-            $tail = "IDR";
-        }
+        $formulaIDR = addTail($priceIDR * $amount);
 
     $result  = "<code>💎Xryptos Calculator $amount $coinx : \n🕓".TimeNow();
     $result .= "\n₿ $formulaBTC BTC\n$ $formulaUSD USD\nRp. ".number_format($formulaIDR,2,',','.')." $tail</code>";
@@ -135,18 +124,11 @@ function priceChecker($coin){
         $lowDayUSD = $usd['LOWDAY'];
         $highDayUSD = $usd['HIGHDAY'];
         $idr = $decode["RAW"][$coinx]["IDR"];
-        $formula = $idr['PRICE'];
+        $formula = addTail($idr['PRICE']);
         $changesIDR = $idr['CHANGEPCTDAY'];
-        $lowDayIDR = $idr['LOWDAY'];
-        $highDayIDR = $idr['HIGHDAY'];
-        if ($formula > 1000000) {
-            $formula = $formula / 1000000;
-            $lowDayIDR = $lowDayIDR / 1000000;
-            $highDayIDR = $highDayIDR / 1000000;
-            $tail = "jt IDR";
-        }else{
-            $tail = "IDR";
-        }
+        $lowDayIDR = addTail($idr['LOWDAY']);
+        $highDayIDR = addTail($idr['HIGHDAY']);
+
     $result  = "<code>💎Stats $coinx : \n";
     $result .= PumpDump($changesUSD).number_format($changesUSD,2)."% | $ $priceUSD \n".PumpDump($changesIDR).number_format($changesIDR,2)."% | ".number_format($formula,2,',','.')." $tail \nHigh : ".number_format($highDayIDR,2,',','.')." $tail | $ $highDayUSD \nLow : ".number_format($lowDayIDR,2,',','.')." $tail | $ $lowDayUSD</code>";
     return $result;
@@ -159,19 +141,13 @@ function AssetCalculator($amount, $pair1, $pair2){
     $pair2x = strtoupper($pair2);
     $getData = json_decode(file_get_contents("https://min-api.cryptocompare.com/data/price?fsym=$pair1x&tsyms=$pair2x"), true);
     $IDR = $getData[''.$pair2x.''];
-    $formula = $IDR * $amount;
+    $formula = addTail($IDR * $amount);
     $text = "💎Asset Calculator \n$amount $pair1x = $formula $pair2x";
 
         if ($pair2 == "idr") {
-            if ($formula > 1000000) {
-            $formula = $formula / 1000000;
-            $tail = "jt IDR";
-        }else{
-            $tail = "IDR";
-        }
             $idr_result = "Rp " . number_format($formula,2,',','.');
             $text = "💎Asset Calculator \n$amount $pair1x = $idr_result $tail";
-        }elseif ($formula == ""){
+        }elseif($formula == ""){
             $text = "<code>Sorry we didn't support your coin yet\nPlease submit with right format\nExample : ex 12 eth idr</code>";
         }
     return $text;
@@ -179,20 +155,25 @@ function AssetCalculator($amount, $pair1, $pair2){
 
 function GlobalStat(){
     $main = json_decode(file_get_contents("https://api.coinlore.com/api/global/"),true);
-        $totalCoin = $main[0]['coins_count'];
-        $activeMarket = $main[0]['active_markets'];
-        $totalMcap = number_format($main[0]['total_mcap']);
-        $totalVolume = number_format($main[0]['total_volume']);
-            $btcValue = $main[0]['btc_d'];
-            $ethValue = $main[0]['eth_d'];
-            $mcapChange = $main[0]['mcap_change'];
-                $volumeChange = $main[0]['volume_change'];
-                $avgChange = $main[0]['avg_change_percent'];
-                $volumeAth = $main[0]['volume_ath'];
-                $mcapAth = number_format($main[0]['mcap_ath']);
-                    $volChangeIcon = PumpDump($volumeChange);
-                    $avgChangeIcon = PumpDump($avgChange);
-                    $mcapChangeIcon = PumpDump($mcapChange);
+    $firstMain = $main[0];
+    
+    $totalCoin = $firstMain['coins_count'];
+    $activeMarket = $firstMain['active_markets'];
+    $totalMcap = number_format($firstMain['total_mcap']);
+    $totalVolume = number_format($firstMain['total_volume']);
+
+    $btcValue = $firstMain['btc_d'];
+    $ethValue = $firstMain['eth_d'];
+    $mcapChange = $firstMain['mcap_change'];
+
+    $volumeChange = $firstMain['volume_change'];
+    $avgChange = $firstMain['avg_change_percent'];
+    $volumeAth = $firstMain['volume_ath'];
+    $mcapAth = number_format($firstMain['mcap_ath']);
+
+    $volChangeIcon = PumpDump($volumeChange);
+    $avgChangeIcon = PumpDump($avgChange);
+    $mcapChangeIcon = PumpDump($mcapChange);
 
 
         $result = "Global Cryptocurrency Stats\nTotal Coin : 💱 $totalCoin\nActive Market : 🛒 $activeMarket\nValue in BTC : ₿ $btcValue BTC\nValue in ETH : 💎 $ethValue ETH\nVolume Change : $volChangeIcon $volumeChange %\nAverage Change : $avgChangeIcon $avgChange %\nMarketcap Change : $mcapChangeIcon $mcapChange %\nTotal Volume : 💸 $totalVolume USD\nTotal Marketcap : 💸 $totalMcap USD\nMarketcap AllDayHigh : 💸 $mcapAth USD\n";
