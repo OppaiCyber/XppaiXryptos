@@ -10,3 +10,5 @@ written in PHP & Using radyakaze Framework
 
 *i'll add some Readme later
 Contact me : https://t.me/OppaiCyber
+
+hey dude (:
