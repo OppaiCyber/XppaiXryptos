@@ -1,5 +1,5 @@
 # XppaiXryptos
-Bot Telegram that'll handle your Cryptocurrency things
+Bot Telegram that handle your Cryptocurrency things
 written in PHP & Using radyakaze Framework
 
 # Installation
@@ -10,5 +10,3 @@ written in PHP & Using radyakaze Framework
 
 *i'll add some Readme later
 Contact me : https://t.me/OppaiCyber
-
-hey dude (:
